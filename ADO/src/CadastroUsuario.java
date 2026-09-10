@@ -48,10 +48,10 @@ public class CadastroUsuario {
             return;
         }
 
-        String mensagem = "NOME\t\tSENHA\n\n";
+        String mensagem = "";
 
         for (int i = 0; i < quantidade; i++) {
-            mensagem += nomes[i] + "\t\t" + senhas[i] + "\n";
+            mensagem += nomes[i] + "\t\t " + senhas[i] + "\n";
         }
 
         JOptionPane.showMessageDialog(
