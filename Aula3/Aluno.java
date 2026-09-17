@@ -1,3 +1,5 @@
+package Aula3;
+
 public class Aluno {
     public String nome;
     public double p1;
