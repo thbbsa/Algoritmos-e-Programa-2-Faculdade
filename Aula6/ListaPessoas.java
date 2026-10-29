@@ -163,6 +163,82 @@ public class ListaPessoas {
         JOptionPane.showMessageDialog(null, "Nome não encontrado.");
     }
 
+    public void quickSortEmail() {
+        int[] inicio = new int[indice + 1];
+        int[] fim = new int[indice + 1];
+        int topo = -1;
+
+        if (indice <= 0) return;
+
+        inicio[++topo] = 0;
+        fim[topo] = indice;
+
+        while (topo >= 0) {
+            int esquerda = inicio[topo];
+            int direita = fim[topo--];
+
+            int i = esquerda;
+            int j = direita;
+            String pivo = list_pessoas[(esquerda + direita) / 2].email;
+
+            while (i <= j) {
+                while (list_pessoas[i].email.compareToIgnoreCase(pivo) < 0) i++;
+                while (list_pessoas[j].email.compareToIgnoreCase(pivo) > 0) j--;
+
+                if (i <= j) {
+                    trocar(i, j);
+                    i++;
+                    j--;
+                }
+            }
+
+            if (esquerda < j) {
+                inicio[++topo] = esquerda;
+                fim[topo] = j;
+            }
+
+            if (i < direita) {
+                inicio[++topo] = i;
+                fim[topo] = direita;
+            }
+        }
+    }
+
+
+    public void mergeSortRG() {
+        if (indice <= 0) return;
+
+        Pessoa[] auxiliar = new Pessoa[indice + 1];
+
+        for (int tamanho = 1; tamanho <= indice; tamanho *= 2) {
+            for (int inicio = 0; inicio <= indice - tamanho; inicio += 2 * tamanho) {
+                int meio = inicio + tamanho - 1;
+                int fim = Math.min(inicio + 2 * tamanho - 1, indice);
+
+                int i = inicio;
+                int j = meio + 1;
+                int k = inicio;
+
+                while (i <= meio && j <= fim) {
+                    if (list_pessoas[i].rg.compareTo(list_pessoas[j].rg) <= 0) {
+                        auxiliar[k++] = list_pessoas[i++];
+                    } else {
+                        auxiliar[k++] = list_pessoas[j++];
+                    }
+                }
+
+                while (i <= meio) auxiliar[k++] = list_pessoas[i++];
+                while (j <= fim) auxiliar[k++] = list_pessoas[j++];
+
+                for (int p = inicio; p <= fim; p++) {
+                    list_pessoas[p] = auxiliar[p];
+                }
+            }
+
+            if (tamanho > indice / 2) break;
+        }
+    }
+
     public static void main(String[] args) {
 
         String totstr = JOptionPane.showInputDialog(null, "Quantas pessoas serão cadastradas?");
@@ -184,7 +260,9 @@ public class ListaPessoas {
                             "6 - Classificar por RG - Insertion Sort\n" +
                             "7 - Buscar um RG - Busca Binária\n" +
                             "8 - Buscar um Nome - Busca Binária\n" +
-                            "9 - Finalizar programa\n\n" +
+                            "9 - Classificar por Email - QuickSort\n" +
+                            "10 - Classificar por RG - MergeSort\n" +
+                            "11 - Finalizar programa\n\n" +
                             "Escolha uma opção:");
 
             opcao = Integer.parseInt(opcaoStr);
@@ -238,13 +316,29 @@ public class ListaPessoas {
                     break;
 
                 case 9:
-                    JOptionPane.showMessageDialog(null, "Programa finalizado.");
+                    lista.quickSortEmail();
+                    JOptionPane.showMessageDialog(null,
+                            "E-mails classificados com QuickSort!");
+                    lista.listar();
                     break;
+
+                case 10:
+                    lista.mergeSortRG();
+                    JOptionPane.showMessageDialog(null,
+                            "RGs classificados com MergeSort!");
+                    lista.listar();
+                    break;
+
+                case 11:
+                    JOptionPane.showMessageDialog(null,
+                            "Programa finalizado.");
+                    break;
+
 
                 default:
                     JOptionPane.showMessageDialog(null, "Opção inválida!");
             }
 
-        } while (opcao != 9);
+        } while (opcao != 11);
     }
 }
